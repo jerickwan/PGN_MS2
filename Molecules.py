@@ -2467,7 +2467,7 @@ def shorten_molecule_name(synonym):
 
     """
     def replace(part):
-        for symbol in ["[", "]", BRANCH_CHAR, "," "<", ">", "(", ")", ","]:
+        for symbol in ["[", "]", BRANCH_CHAR, ";", "<", ">", "(", ")", ","]:
             if symbol in part:
                 return symbol.join(
                     replace(subpart) for subpart in part.split(symbol))
@@ -2479,59 +2479,3 @@ def shorten_molecule_name(synonym):
     name = "".join(name_parts)
     name = name.replace(BRANCH_CHAR,shBRANCH_CHAR)
     return name
-
-
-Lac = Molecule("OC(C)C(O)=O")
-A = AMINO_ACID_DB["Ala"]  # Alanine
-R = AMINO_ACID_DB["Arg"]  # Arginine
-
-F = AMINO_ACID_DB["Phe"]  # Phenylalanine
-G = AMINO_ACID_DB["Gly"]  # Glycine
-P = AMINO_ACID_DB["Pro"]  # Proline
-
-# isomeric
-E = AMINO_ACID_DB["Glu"]  # Glutamic Acid
-e = AMINO_ACID_DB["γ-Glu"]  # γ-Glutamic Acid
-Q = AMINO_ACID_DB["Gln"]  # Glutamine
-q = AMINO_ACID_DB["γ-isoGln"]  # γ-Glutamine
-N = AMINO_ACID_DB["Asn"] # Asparagine
-n = AMINO_ACID_DB["β-isoAsn"]  # Isoasparagine
-D = AMINO_ACID_DB["Asp"] # Asparagine
-d = AMINO_ACID_DB["β-Asp"]  # Isoaspartic Acid
-
-K = AMINO_ACID_DB["Lys"]  # Lysine
-k = AMINO_ACID_DB["ε-Lys"]  # IsoLysine
-
-# non-proteinogenic
-m = AMINO_ACID_DB["mDAP"]  # mDAP
-a = AMINO_ACID_DB["mDAP(NH2)"]  # Amidated mDAP
-
-# TEST GLYCANS
-NAG = GLYCAN_DB["GlcNAc"]
-NAM = GLYCAN_DB["MurNAc"]
-GLC = GLYCAN_DB["GlcN"]
-
-anNAM = GLYCAN_DB["anMurNAc"]
-
-NAGNAM = NAG+NAM
-NAGanNAM = NAG+anNAM
-
-
-# %% Testing
-
-
-# PEPTIDES
-# Tan et al structure [a-c]
-a_tetra = Lac+A+e+m+A
-
-Tan_str_a = NAGanNAM & a_tetra
-Tan_str_b = anNAM & a_tetra
-Tan_str_c = NAGNAM & a_tetra
-
-# Tan et al structure [d-e]
-d_tri = Lac+A+q+K
-d_side = G+G+G+G+G
-d_full = (d_side-d_tri)+A+A
-
-Tan_str_d = NAGNAM & d_full
-Tan_str_e = NAM & d_full
