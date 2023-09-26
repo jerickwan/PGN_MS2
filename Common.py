@@ -22,6 +22,16 @@ PRECISION_INTENSITY = 4
 OUTPUT_ADDUCTS = ['[M+H]+', '[M+Na]+', '[M+K]+',
                   '[M+2H]2+', '[M+3H]3+']  # adducts
 
+# %%% Create Folders
+
+for folder in ["img","output","cache"]:
+    try:
+        cwd = os.getcwd()
+        path = cwd+f"/{folder}"
+        os.mkdir(path)
+    except FileExistsError:
+        pass
+
 # %% Developer Options
 
 DEV_MODE = False
