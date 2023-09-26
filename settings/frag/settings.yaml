@@ -1,0 +1,142 @@
+iontypes_dict:
+  Acyl-H2O:
+    Sum: true
+    Terminal: true
+    int_factor: 0.12
+  Acyl-NH3:
+    Sum: true
+    Terminal: true
+    int_factor: 0.18
+  Glc-1:
+    Terminal: true
+    int_factor: 0.3
+  Glc-2:
+    int_factor: 0.3
+  Glc-3:
+    Terminal: true
+    int_factor: 0.9
+  Gly-B:
+    int_factor: 0.6
+  Gly-C:
+    int_factor: 0.05
+  Gly-Lac:
+    int_factor: 0.1
+  Gly-Lac[r]:
+    int_factor: 0.1
+  Gly-Y:
+    int_factor: 0.25
+  Gly-Y[r]:
+    int_factor: 0.4
+  Gly-Z:
+    int_factor: 0.3
+  Gly-Z[r]:
+    int_factor: 0.5
+  Lac:
+    int_factor: 0.9
+  Lac[r]:
+    int_factor: 0.6
+  Mur-1:
+    Terminal: true
+    int_factor: 0.4
+  Pep-K1:
+    Terminal: true
+    int_factor: 0.8
+  Pep-b:
+    int_factor: 0.9
+  Pep-e1:
+    int_factor: 0.15
+  Pep-e2:
+    int_factor: 0.2
+  Pep-q1:
+    int_factor: 0.4
+  Pep-q2:
+    int_factor: 0.6
+  Pep-y:
+    int_factor: 0.9
+mapping:
+  -H2O:
+    frag_types:
+    - Acyl-H2O
+    - null
+    moiety: peptide
+  -NH3:
+    frag_types:
+    - Acyl-NH3
+    - null
+    moiety: peptide
+  Glc 1:
+    frag_types:
+    - Glc-1
+    - Glc-2
+    moiety: glycan
+  Glc 2:
+    frag_types:
+    - Glc-3
+    - null
+    moiety: glycan
+  Gly. B/Y:
+    frag_types:
+    - Gly-B
+    - Gly-Y
+    moiety: glycan
+  Gly. B/Y[r]:
+    frag_types:
+    - Gly-B
+    - Gly-Y[r]
+    moiety: glycan
+  Gly. C/Z:
+    frag_types:
+    - Gly-C
+    - Gly-Z
+    moiety: glycan
+  Gly. C/Z[r]:
+    frag_types:
+    - Gly-C
+    - Gly-Z[r]
+    moiety: glycan
+  Lac:
+    frag_types:
+    - Lac
+    - Gly-Lac
+    moiety: glycan
+  Lac[r]:
+    frag_types:
+    - Lac[r]
+    - Gly-Lac[r]
+    moiety: glycan
+  Mur 1:
+    frag_types:
+    - Mur-1
+    - null
+    moiety: glycan
+  Peptide K:
+    frag_types:
+    - Pep-K1
+    - null
+    moiety: peptide
+  Peptide b:
+    frag_types:
+    - Pep-b
+    - null
+    moiety: peptide
+  Peptide e:
+    frag_types:
+    - Pep-e1
+    - Pep-e2
+    moiety: peptide
+  Peptide q:
+    frag_types:
+    - Pep-q1
+    - Pep-q2
+    moiety: peptide
+  Peptide y:
+    frag_types:
+    - Pep-y
+    - null
+    moiety: peptide
+max_num_ions_export: 50
+max_num_ions_save: 200
+max_times: 3
+min_precursor_percent: 0.03
+min_product_int: 0.01
+min_product_mz: 100

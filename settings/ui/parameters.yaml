@@ -1,0 +1,8 @@
+default_Glc_types: GlcNAc,GlcN,GlcNAcOAc
+default_Mur_types: MurNAc,MurN,MurNAcOAc,anMurNAc
+default_tripeptide:
+  1: Ala
+  2: isoGlu,isoGln
+  3: mDAP,mDAP(NH2),Lys,Orn
+full_AA_range: Ala,Gly,Lys,Phe,Cys,Leu,Pro,Met,Trp,Tyr,His,Arg,Ser,Asp,Asn
+limited_AA_range: Ala,Gly,Lys
