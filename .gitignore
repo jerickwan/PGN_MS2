@@ -1,0 +1,14 @@
+.spyproject/
+models/*
+img/
+output/
+cache/
+*.pyc
+*.csv
+*.msp
+*.png
+*.npy
+*.stats
+bot.txt
+data/~$PGN.xlsx
+data/PGN_old20230517.xlsx
