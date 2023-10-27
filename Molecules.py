@@ -634,13 +634,26 @@ class Molecule:
         self.add_coords = False
         self.smiles = Chem.MolToSmiles(self.mol, canonical=True)
         self.retention_time = 0
+        # Hidden Properties
+        self.reset_hidden_var()
+        # mz
         self.mz = {}
         if AUTOCALC_MZ:
             self.update_mz()
+
+    def reset_hidden_var(self):
+        # Hidden Properties
         self.__property_array = None
         self.__morgan_fingerprint = {}
         self.__name = None
         self.__synonym = None
+        self.__formula = None
+        self.__mMass = None
+        self.__charge = None
+        self.__neutral_form = None
+        self.__InchiKey = None
+        self.__neutral_InchiKey = None
+        self.__clogP = None
 
     # %%%% Magic Methods
 
@@ -678,43 +691,57 @@ class Molecule:
     @property
     def formula(self):
         '''Returns chemical formula'''
-        return CalcMolFormula(self.mol)
+        if self.__formula is None:
+            self.__formula = CalcMolFormula(self.mol)
+        return self.__formula
 
     @property
     def mMass(self):
         '''Returns exact molecular mass'''
-        return round(CalcExactMolWt(self.mol), PRECISION_MASS)
+        if self.__mMass is None:
+            self.__mMass = CalcExactMolWt(self.mol)
+        return round(self.__mMass, PRECISION_MASS)
 
     @property
     def charge(self):
         '''Returns num of positive charge'''
-        return GetFormalCharge(self.mol)
+        if self.__charge is None:
+            self.__charge = GetFormalCharge(self.mol)
+        return self.__charge
 
     @property
     def neutral_form(self):
         '''Returns neutral form of ion (if possible)'''
-        if self.charge == 0:
-            return self.mol
-        else:
-            return uncharge_molecule(self.mol)
+        if self.__neutral_form is None:
+            if self.charge == 0:
+                self.__neutral_form = self.mol
+            else:
+                self.__neutral_form = uncharge_molecule(self.mol)
+        return self.__neutral_form
 
     @property
     def InchiKey(self):
         '''Returns InchiKey'''
-        return MolToInchiKey(self.mol)
+        if self.__InchiKey is None:
+            self.__InchiKey = MolToInchiKey(self.mol)
+        return self.__InchiKey
 
     @property
     def neutral_InchiKey(self):
         '''Returns InchiKey of neutral form'''
-        if self.neutral_form:
-            return MolToInchiKey(self.neutral_form)
-        else:
-            return False
+        if self.__neutral_InchiKey is None:
+            if self.neutral_form:
+                self.__neutral_InchiKey = MolToInchiKey(self.neutral_form)
+            else:
+                self.__neutral_InchiKey = False
+        return self.__neutral_InchiKey
 
     @property
     def clogP(self):
         '''Returns computed logP (Crippen method)'''
-        return round(MolLogP(self.mol), 5)
+        if self.__clogP is None:
+            self.__clogP = round(MolLogP(self.mol), 5)
+        return self.__clogP
 
     @property
     def num_heavy_atoms(self):
@@ -886,7 +913,7 @@ class Molecule:
         Chem.SanitizeMol(self.mol)
         self.smiles = Chem.MolToSmiles(self.mol, canonical=True)
         self.add_coords = False
-        self.__name, self.__synonym = None, None #reset name
+        self.reset_hidden_var() # reset
 
     def set_atom_map_numbers(self):
         """
@@ -2467,7 +2494,7 @@ def shorten_molecule_name(synonym):
 
     """
     def replace(part):
-        for symbol in ["[", "]", BRANCH_CHAR, ";", "<", ">", "(", ")", ","]:
+        for symbol in ["[", "]", BRANCH_CHAR, ";","<", ">", "(", ")", ","]:
             if symbol in part:
                 return symbol.join(
                     replace(subpart) for subpart in part.split(symbol))
@@ -2479,3 +2506,59 @@ def shorten_molecule_name(synonym):
     name = "".join(name_parts)
     name = name.replace(BRANCH_CHAR,shBRANCH_CHAR)
     return name
+
+
+Lac = Molecule("OC(C)C(O)=O")
+A = AMINO_ACID_DB["Ala"]  # Alanine
+R = AMINO_ACID_DB["Arg"]  # Arginine
+
+F = AMINO_ACID_DB["Phe"]  # Phenylalanine
+G = AMINO_ACID_DB["Gly"]  # Glycine
+P = AMINO_ACID_DB["Pro"]  # Proline
+
+# isomeric
+E = AMINO_ACID_DB["Glu"]  # Glutamic Acid
+e = AMINO_ACID_DB["γ-Glu"]  # γ-Glutamic Acid
+Q = AMINO_ACID_DB["Gln"]  # Glutamine
+q = AMINO_ACID_DB["γ-isoGln"]  # γ-Glutamine
+N = AMINO_ACID_DB["Asn"] # Asparagine
+n = AMINO_ACID_DB["β-isoAsn"]  # Isoasparagine
+D = AMINO_ACID_DB["Asp"] # Asparagine
+d = AMINO_ACID_DB["β-Asp"]  # Isoaspartic Acid
+
+K = AMINO_ACID_DB["Lys"]  # Lysine
+k = AMINO_ACID_DB["ε-Lys"]  # IsoLysine
+
+# non-proteinogenic
+m = AMINO_ACID_DB["mDAP"]  # mDAP
+a = AMINO_ACID_DB["mDAP(NH2)"]  # Amidated mDAP
+
+# TEST GLYCANS
+NAG = GLYCAN_DB["GlcNAc"]
+NAM = GLYCAN_DB["MurNAc"]
+GLC = GLYCAN_DB["GlcN"]
+
+anNAM = GLYCAN_DB["anMurNAc"]
+
+NAGNAM = NAG+NAM
+NAGanNAM = NAG+anNAM
+
+
+# %% Testing
+
+
+# PEPTIDES
+# Tan et al structure [a-c]
+a_tetra = Lac+A+e+m+A
+
+Tan_str_a = NAGanNAM & a_tetra
+Tan_str_b = anNAM & a_tetra
+Tan_str_c = NAGNAM & a_tetra
+
+# Tan et al structure [d-e]
+d_tri = Lac+A+q+K
+d_side = G+G+G+G+G
+d_full = (d_side-d_tri)+A+A
+
+Tan_str_d = NAGNAM & d_full
+Tan_str_e = NAM & d_full

@@ -97,7 +97,7 @@ FRAG_RXN_ORDER = [
 
 FRAG_MODEL = {
     "max_times": 3,
-    "min_precursor_percent": 0.03,
+    "min_precursor_percent": 0.03, # increase to improve runtime
     "min_product_mz": 100,
     "min_product_int": 0.01,
     "max_num_ions_export": 50,  # kept in simple msp
@@ -405,7 +405,7 @@ class Fragmenter:
         self.peaklist_df_full = None
         self.create_full_peaklist_dataframe(
             False, False, False, False)  # initialise df
-        self.PGN_params = self.PGN.property_array
+        #self.PGN_params = self.PGN.property_array
         if auto_process:
             self.auto_process(adduct_type=adduct_type, **kwargs)
 
@@ -579,7 +579,8 @@ class Fragmenter:
             num_f = len(pdts1_smiles)
             if frag_rxn in self.debug_reactions and num_f > 0:
                 print(
-                    f'''\n{num_f} fragments formed from {frag_rxn} rxn from ion {idx}''')
+                    f'''\n{num_f} fragments formed from {frag_rxn} rxn
+                    from ion {idx}''')
             for frag_type, pdt_lst in zip(frag_types,
                                           [pdts1_smiles, pdts2_smiles]):
                 if frag_type is None or len(pdt_lst) == 0:

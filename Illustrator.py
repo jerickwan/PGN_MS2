@@ -769,22 +769,24 @@ class Illustrator:
 
         """
         lst_mods = [mod for mod in modifications if modifications[mod]]
+        # Title
+        self.ax.text(1-self.gap,
+                     1-self.gap,
+                     "Modifications",
+                     va="top",
+                     ha="right",
+                     fontsize=self.fontsize_title)
         if len(lst_mods) > 0:
             mods_txt = self.vert_text(lst_mods)
-            # Title
-            self.ax.text(1-self.gap,
-                         1-self.gap,
-                         "Modifications",
-                         va="top",
-                         ha="right",
-                         fontsize=self.fontsize_title)
-            # Mods
-            self.ax.text(1-self.gap,
-                         1-self.glycan_radius,
-                         mods_txt,
-                         va="top",
-                         ha="right",
-                         fontsize=self.get_fontsize("vert", len(lst_mods)))
+        else:
+            mods_txt = "None"
+        # Mods
+        self.ax.text(1-self.gap,
+                     1-self.glycan_radius,
+                     mods_txt,
+                     va="top",
+                     ha="right",
+                     fontsize=self.get_fontsize("vert", len(lst_mods)))
 
     def plot_all(self, gen):
         """

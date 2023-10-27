@@ -95,7 +95,8 @@ class Generator():
                  num_polymerisations=0,
                  diffcalc_units_min=99,
                  diffcalc_maxdiff_per_unit=None,
-                 warning_threshold=GEN_WARNING_THRESHOLD
+                 warning_threshold=GEN_WARNING_THRESHOLD,
+                 output_adducts=OUTPUT_ADDUCTS
                  ):
         """
 
@@ -124,6 +125,8 @@ class Generator():
             No. of differences allowed per PGN unit for each. First integer in
             list is used for 2-mers, second 3-mers,... etc.
             The default is None (not used).
+        output_adducts : list, optional
+            List of output adducts. The default is OUTPUT_ADDUCTS.
         warning_threshold : int, optional
             Generation of n-mers above threshold will prompt for confirmation
             first. The default is GEN_WARNING_THRESHOLD.
@@ -185,8 +188,9 @@ class Generator():
         self.refresh_parameters()
         self.PGN_dict = {}
         self.reference_dict = {}
+        self.output_adducts = output_adducts
 
-        print(f"\tOutput adducts:\t{OUTPUT_ADDUCTS}")
+        print(f"\tOutput adducts:\t{self.output_adducts}")
         print(f"\tMin. mass:\t{GEN_MIN_PRODUCT_MASS}")
         print(f"\tMax. peptide length:\t{GEN_MAX_PEPTIDE_LENGTH}")
 
@@ -2047,7 +2051,7 @@ class Generator():
                                 PGN.mMass, PGN.clogP]
                     info = "\t".join(map(str, info_lst))
                     for adduct, mz in PGN.mz.items():
-                        if adduct in OUTPUT_ADDUCTS:
+                        if adduct in self.output_adducts:
                             mz_info_lst = [PGN.name, mz, "0", adduct, InchiKey]
                             mz_info = "\t".join(map(str, mz_info_lst))
                             PGN_info = "\t".join([mz_info, info])
@@ -2055,7 +2059,7 @@ class Generator():
                             f.write("\n")
             f.write("\n")
         print(f"\nMS1 library saved as:\t{txt_filename}")
-        print(f"\tAdducts:{OUTPUT_ADDUCTS}")
+        print(f"\tAdducts:{self.output_adducts}")
 
     def export_reference_dict(self):
         """
