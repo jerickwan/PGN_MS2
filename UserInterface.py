@@ -2,20 +2,27 @@
 User Interface, Testing
 env = chem
 '''
-# .msp files are ASCII and do not support greek characters/em-dash
+# %% Imports
+import easygui
+import yaml
+import sys
+import os
+from pathlib import Path
+
+# %%% Resolve Paths
+frozen = getattr(sys, 'frozen', False)
+if frozen:
+    wd = Path(sys.executable).parent
+    os.chdir(wd)
+    print('os.getcwd is', os.getcwd() )
+
+# %%% Import Customs
 
 from MSPMaker import MSPMaker, Fragmenter
 from Molecules import Molecule, AminoAcid, Peptide, Glycan, Peptidoglycan
 from Generator import Generator
 from Exceptions import InputError
 from Common import TIME_STRING, MEMORY
-
-import easygui
-import yaml
-import sys
-import os
-
-from pathlib import Path
 
 # %% GUI
 

@@ -7,7 +7,6 @@ import copy
 from math import cos, sin, pi
 from matplotlib.colors import to_rgba
 
-
 ILL_PARAMS = {
     "COLORS": {
         "GLU": "blue", "MUR": "green",

@@ -3,6 +3,7 @@ models/*
 img/
 output/
 cache/
+build/
 *.pyc
 *.csv
 *.msp
@@ -12,3 +13,5 @@ cache/
 bot.txt
 data/~$PGN.xlsx
 data/PGN_old20230517.xlsx
+UserInterface.spec
+*.exe
