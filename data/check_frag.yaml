@@ -9,27 +9,31 @@ glycan:
     Glc 1:
     - 186.076
     - 168.066
-    - 186.076
-    - 168.066
+    - 188.092
+    - 170.081
     Glc 2: []
-    Gly. B/Y:
+    Gly. B/Y: []
+    Gly. B/Y[r]:
     - 204.087
     - 367.171
-    Gly. C/Z:
+    Gly. C/Z: []
+    Gly. C/Z[r]:
     - 222.097
     - 349.161
-    Lac:
-    - 162.076
-    - 19.018
+    Lac: []
     Lac [K]:
     - 200.032
     - 18.011
     Lac [Na]:
     - 184.058
     - 18.011
+    Lac[r]:
+    - 162.076
+    - 409.182
     Mur 1:
     - 138.055
     - 18.011
+    Name: (NAG)(NAM)[r]-A
   CC(=O)NC1C(O)OC(CO)C(O)C1OC(C)C(=O)O:
     Adduct [K]:
     - 332.074
@@ -42,13 +46,17 @@ glycan:
     - 168.066
     Glc 2: []
     Gly. B/Y: []
+    Gly. B/Y[r]: []
     Gly. C/Z: []
+    Gly. C/Z[r]: []
     Lac: []
     Lac [K]: []
     Lac [Na]: []
+    Lac[r]: []
     Mur 1:
     - 138.055
     - 18.011
+    Name: (NAM)
   CC(=O)NC1C(O)OC(COC(C)=O)C(OC2OC(CO)C(O)C(OC(C)C(=O)O)C2N)C1OC(C)C(=O)O:
     Adduct [K]:
     - 607.175
@@ -57,7 +65,7 @@ glycan:
     - 591.201
     - 18.011
     Glc 1:
-    - 186.076
+    - 228.087
     - 168.066
     - 144.066
     - 126.055
@@ -65,17 +73,21 @@ glycan:
     Gly. B/Y:
     - 234.097
     - 336.129
+    Gly. B/Y[r]: []
     Gly. C/Z:
     - 252.108
     - 318.118
+    Gly. C/Z[r]: []
     Lac: []
     Lac [K]: []
     Lac [Na]: []
+    Lac[r]: []
     Mur 1:
     - 138.055
     - 18.011
     - 138.055
     - 18.011
+    Name: (MUR)(DAM)
   CC(=O)NC1C(OC2C(CO)OC(O)C(NC(C)=O)C2OC(C)C(=O)NC(C)C(=O)O)OC(CO)C(O)C1O:
     Adduct [K]:
     - 606.191
@@ -92,21 +104,25 @@ glycan:
     Gly. B/Y:
     - 204.087
     - 365.155
+    Gly. B/Y[r]: []
     Gly. C/Z:
     - 222.097
     - 347.145
+    Gly. C/Z[r]: []
     Lac:
     - 162.076
-    - 19.018
+    - 407.166
     Lac [K]:
     - 200.032
     - 18.011
     Lac [Na]:
     - 184.058
     - 18.011
+    Lac[r]: []
     Mur 1:
     - 138.055
     - 18.011
+    Name: (NAG)(NAM)-A
   CC(=O)NC1C(OC2C3COC(O3)C(NC(C)=O)C2OC(C)C(=O)NC(C)C(=O)O)OC(CO)C(O)C1O:
     Adduct [K]:
     - 588.18
@@ -117,27 +133,29 @@ glycan:
     Glc 1:
     - 186.076
     - 168.066
-    - 186.076
-    - 168.066
     Glc 2: []
     Gly. B/Y:
     - 204.087
     - 347.145
+    Gly. B/Y[r]: []
     Gly. C/Z:
     - 222.097
     - 329.134
+    Gly. C/Z[r]: []
     Lac:
     - 162.076
-    - 19.018
+    - 389.155
     Lac [K]:
     - 200.032
     - 18.011
     Lac [Na]:
     - 184.058
     - 18.011
+    Lac[r]: []
     Mur 1:
     - 138.055
     - 18.011
+    Name: (NAG)(anNAM)-A
   CC(OC1C(N)C(O)OC(CO)C1O)C(=O)O:
     Adduct [K]:
     - 290.064
@@ -150,13 +168,17 @@ glycan:
     - 126.055
     Glc 2: []
     Gly. B/Y: []
+    Gly. B/Y[r]: []
     Gly. C/Z: []
+    Gly. C/Z[r]: []
     Lac: []
     Lac [K]: []
     Lac [Na]: []
+    Lac[r]: []
     Mur 1:
     - 138.055
     - 18.011
+    Name: (MUR)
   CC(OC1C(NC(=O)CO)C(O)OC(CO)C1OC1OC(CO)C(O)C(O)C1N)C(=O)O:
     Adduct [K]:
     - 509.138
@@ -173,12 +195,16 @@ glycan:
     Gly. B/Y:
     - 162.076
     - 310.113
+    Gly. B/Y[r]: []
     Gly. C/Z:
     - 180.087
     - 292.103
+    Gly. C/Z[r]: []
     Lac: []
     Lac [K]: []
     Lac [Na]: []
+    Lac[r]: []
     Mur 1:
     - 138.055
     - 18.011
+    Name: (G)(NGcM)
