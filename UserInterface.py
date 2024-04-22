@@ -1406,21 +1406,19 @@ class GUI():
                 smiles = easygui.textbox(self.history+msg,
                                          self.title)
                 molecule = Molecule(smiles)
-                self.history = f"Added {molecule.InchiKey} with formula: {molecule.formula}"
+                if molecule.mMass < 1: #invalid
+                    molecule = None
+                    self.history = "Invalid SMILES"
+                else:
+                    self.history = f"Added {molecule.InchiKey} with formula: {molecule.formula}"
+                    self.show_molecule_img(molecule)
+
             elif choice == "Clear SMILES":
                 smiles = None
                 molecule = None
                 self.history = "Cleared SMILES"
             elif choice == "View Molecule" and molecule is not None:
-                img = molecule.draw()
-                key = molecule.InchiKey
-                img_path = f"img/{key}.png"
-                img.save(img_path)
-                msg = f'''This is your molecule:
-                    Formula: {molecule.formula}
-                    InChiKey: {molecule.InchiKey}'''
-                choices = ["I see!"]
-                easygui.buttonbox(msg, image=img_path, choices=choices)
+                self.show_molecule_img(molecule)
             elif choice == "Enter Name":
                 msg = "Add a name (optional)."
                 name = easygui.textbox(self.history+msg,
@@ -1430,6 +1428,18 @@ class GUI():
             elif choice == "Clear Name":
                 name = None
         return name, molecule
+
+    def show_molecule_img(self,molecule):
+        if molecule is not None:
+            img = molecule.draw()
+            key = molecule.InchiKey
+            img_path = f"img/{key}.png"
+            img.save(img_path)
+            msg = f'''This is your molecule:
+                Formula: {molecule.formula}
+                InChiKey: {molecule.InchiKey}'''
+            choices = ["I see!"]
+            easygui.buttonbox(msg, image=img_path, choices=choices)
 
 
 if __name__ == "__main__":

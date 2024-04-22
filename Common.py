@@ -16,7 +16,7 @@ from collections.abc import Iterable
 BOND_CHAR = "."  # used to indicate main chain bonds
 BRANCH_CHAR = "--"  # used to indicate side chain bonds /synonyms
 shBRANCH_CHAR = "-" # used to indicate side chain bonds /names
-BATCH_SIZE = 2500  # maximum no. of cpds handled at one time
+BATCH_SIZE = 750  # maximum no. of cpds handled at one time
 PRECISION_MASS = 5
 PRECISION_INTENSITY = 4
 OUTPUT_ADDUCTS = ['[M+H]+', '[M+Na]+', '[M+K]+',

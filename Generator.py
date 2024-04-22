@@ -1665,13 +1665,17 @@ class Generator():
             # check amount
             print(f"\t{name} polymerised {k}-mers: {len_P1}x{len_P2}")
             if total > self.warning_threshold:
-                prompt = f'''Continue with {total} {name}? Y/N/X'''
-                print(prompt)
+                prompt = f"Continue with {total} {name}? Y/N/X"
+                "\n[Y] Continue [N] Skip to next step [X] Terminate"
+                answer = print(prompt)
                 answer = "N"
                 if answer == "N":
+                    print("[N] Skipping...")
                     continue
                 elif answer == "X":
+                    print("[X] Terminating...")
                     return
+                print("[Y]\tContinuing...")
             # sort
             valid_P1.sort(key=lambda x: x.smiles)
             valid_P2.sort(key=lambda x: x.smiles)

@@ -205,7 +205,8 @@ class Fragmenter:
         self.min_product_mz = min_product_mz
         self.update_null_variables()  # update variables from FRAG_MODEL
         self.name = None
-        self.dir = None
+        self.parent_dir = None
+        self.peaklist_dir = None
         self.refresh_name(name)
         self.adduct_type = None
         self.frag_mode = frag_mode
@@ -351,8 +352,9 @@ class Fragmenter:
             self.name = new_name
             if not self.quiet:
                 print(f"\nFragmenter {self.name} is created.")
-            self.dir = Path(f"output/{self.name}/peaklists")
-            make_dir(f"output/{self.name}", self.dir)
+            self.parent_dir = Path("output")/f"{self.name}"
+            self.peaklists_dir = self.parent_dir/"peaklists"
+            make_dir(self.parent_dir, self.peaklists_dir)
 
     def load_PGN(self, PGN, PGN_name="test", adduct_type="[M+H]+",
                  auto_process=False, **kwargs):
@@ -1050,9 +1052,10 @@ class Fragmenter:
         # export full peaklist
         peaklist_df = self.pick_dataframe(overwrite, simple=False)
         if filename is None:
-            csv_filename = f"{self.dir}\{TIME_STRING}_{self.PGN_name}_full.csv"
+            csv_filename = f"{TIME_STRING}_{self.PGN_name}_full.csv"
+            csv_filename = self.peaklist_dir/csv_filename
         else:
-            csv_filename = f"{self.dir}\{filename}_full.csv"
+            csv_filename =  self.peaklist_dir/f"{filename}_full.csv"
         try:
             peaklist_df.to_csv(csv_filename, index=False)
         except PermissionError:
@@ -1101,11 +1104,10 @@ class Fragmenter:
             omit_mz_threshold=MSP_OMIT_MZ_THRESHOLD,
             overwrite=overwrite)
         if filename is None:
-            csv_filename = \
-                f'''{self.dir}\{TIME_STRING}_{self.PGN_name}_{adduct_type}_simple.csv'''
+            csv_filename = f"{TIME_STRING}_{self.PGN_name}_{adduct_type}_simple.csv"
+            csv_filename = self.peaklist_dir/csv_filename
         else:
-            csv_filename = \
-                f'''{self.dir}\{filename}_{adduct_type}_simple.csv'''
+            csv_filename = self.peaklist_dir/f"{filename}_{adduct_type}_simple.csv"
         try:
             simple_df.to_csv(csv_filename, index=False)
         except PermissionError:
@@ -1234,7 +1236,8 @@ class MSPMaker():
 
         """
         self.name = None
-        self.dir = None
+        self.parent_dir = None
+        self.msp_dir = None
         self.refresh_name(name)
         self.ionmode = ionmode
         self.counter = Counter()
@@ -1277,8 +1280,9 @@ class MSPMaker():
         if self.name != new_name:
             self.name = new_name
             print(f"\nMSPMaker {self.name} is created.")
-            self.dir = f"output/{self.name}/msp"
-            make_dir(f"output/{self.name}", self.dir)
+            self.parent_dir = Path(f"output/{self.name}")
+            self.msp_dir = self.parent_dir/"msp"
+            make_dir(self.parent_dir, self.msp_dir)
 
     # %%% Processing
 
@@ -1298,7 +1302,8 @@ class MSPMaker():
 
         """
         if self.msp_filename is None or overwrite:
-            self.msp_filename = f"{self.dir}/{TIME_STRING}_{self.name}.msp"
+            self.msp_filename = f"{TIME_STRING}_{self.name}.msp"
+            self.msp_filename = self.msp_dir/self.msp_filename
         file_exists = os.path.exists(self.msp_filename)
         if file_exists and not overwrite:
             print(f"\nAppending to existing mspfile:\t{self.msp_filename}")
@@ -1493,7 +1498,8 @@ class MSPMaker():
             Reference file path.
 
         """
-        file_path = f"{self.dir}/{TIME_STRING}_{self.name}.txt"
+        file_path = f"{TIME_STRING}_{self.name}.txt"
+        file_path = self.msp_dir/file_path
         with open(file_path, "w", encoding="ASCII") as f:
             f.write(str(cpd_pkl_filename))
             f.close()
@@ -1726,7 +1732,8 @@ class MSPMaker():
             Pickle file path.
 
         """
-        pickle_filename = f"{self.dir}/{TIME_STRING}_{self.name}_{idx}.pickle"
+        pickle_filename = f"{TIME_STRING}_{self.name}_{idx}.pickle"
+        pickle_filename = self.msp_dir/pickle_filename
         with open(pickle_filename, "wb") as f:
             pickle.dump(self.peaklist_df_data, f)
             f.close()
