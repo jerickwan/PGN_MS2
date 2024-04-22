@@ -7,6 +7,7 @@ import copy
 from math import cos, sin, pi
 from matplotlib.colors import to_rgba
 
+
 ILL_PARAMS = {
     "COLORS": {
         "GLU": "blue", "MUR": "green",
@@ -802,17 +803,21 @@ class Illustrator:
 
         """
         self.adjust_sizes_for_peptide_length(gen.peptide_lmax)
-        self.plot_sugars(gen.glycan_units["Glc"],
-                         gen.glycan_units["Mur"],
+        self.plot_sugars(gen.glycan_units["Glc"].copy(),
+                         gen.glycan_units["Mur"].copy(),
                          gen.glycan_lmin,
                          gen.glycan_lmax,
-                         highlight_sugars=gen.diffcalc_params.get("gly_range", None))
-        self.plot_stem_peptide(gen.get_peptide_residues(),
+                         highlight_sugars=\
+                             gen.diffcalc_params.get("gly_range", None))
+        self.plot_stem_peptide(gen.get_peptide_residues().copy(),
                                gen.peptide_lmin,
                                gen.peptide_lmax,
-                               highlight_AAs=gen.diffcalc_params.get("pep_range", None))
-        self.plot_bridge_peptides(gen.bridge_peptides,
-                                  highlight_bridges=gen.diffcalc_params.get("side_chain_range", None))
+                               highlight_AAs=\
+                                   gen.diffcalc_params.get("pep_range", None))
+        self.plot_bridge_peptides(gen.bridge_peptides.copy(),
+                                  highlight_bridges=\
+                                      gen.diffcalc_params.get(
+                                          "side_chain_range", None))
         self.plot_modifications(gen.modifications)
         self.adjust_sizes_for_polymerisation_types(gen.polymerisation_types)
         self.plot_polymerisations(
