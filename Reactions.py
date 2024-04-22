@@ -304,14 +304,18 @@ RED_GLY_FRAG_CZ = make_rxn(RED_GLY_FRAG_CZ_SMARTS)
 
 # Cleavage about PEP: PEP-Glycan bond, PEP-Peptide bond
 # More prominent in non-reduced Mur
-FRAG_LAC_DEHYD = "[CX3:5](=[CH2:6])-[CX3:7](=[OH+:8])-[NX3:94]"
-FRAG_LAC_PEPTIDE = "[OH2+:4]-[CH1X4:5](-[CH3:6])-[CX3:7](=[O:8])-[NX3:94]"
-FRAG_LAC_GLYCAN = "[CX4;$([C]-[OX2H+]),CR2:1]-[CX3;$(CN):2](-[NX3+:9]-[H]=[CX3:3]" #test
 
+# Lactoyl peptide fragment
+FRAG_LAC_PEPTIDE = "[OH2+:4]-[CH1X4:5](-[CH3:6])-[CX3:7](=[O:8])-[NX3:94]"
+# Glycan fragment
+FRAG_LAC_GLYCAN = "[CX4;$([C]-[OX2H+]),CR2:1]-[CX3;$(CN):2](-[NX3+:9]-[H])=[CX3:3]"
+
+# Reduced glycan parent
 RED_GLYCAN_LAC = "[CH2X4;$([C]-[OX2]):1]-[CH1X4;$(CN):2](-[NX3:9])-[CH1X4:3]-[O:4]-[CH1X4:5](-[CH3:6])-[CX3:7](=[O:8])-[NX3:94]"
 RED_GLY_FRAG_LAC_SMARTS = f"{RED_GLYCAN_LAC}>>{FRAG_LAC_PEPTIDE}.{FRAG_LAC_GLYCAN}" # only red
 RED_GLY_FRAG_LAC = make_rxn(RED_GLY_FRAG_LAC_SMARTS)
 
+# Non-reduced glycan parent
 NONRED_GLYCAN_LAC = "[CX4;$([C]-[OX2H0]),CR2:1]-[CH1X4;$(CN):2](-[NX3:9])-[CH1X4:3]-[O:4]-[CH1X4:5](-[CH3:6])-[CX3:7](=[O:8])-[NX3:94]"
 NONRED_GLY_FRAG_LAC_SMARTS = f"{NONRED_GLYCAN_LAC}>>{FRAG_LAC_PEPTIDE}.{FRAG_LAC_GLYCAN}"
 NONRED_GLY_FRAG_LAC = make_rxn(NONRED_GLY_FRAG_LAC_SMARTS)
