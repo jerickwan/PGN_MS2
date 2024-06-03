@@ -1,0 +1,14 @@
+name: pgnms2
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.9
+  - anaconda
+  - rdkit
+  - pandas
+  - numpy
+  - yaml
+  - joblib
+  - easygui

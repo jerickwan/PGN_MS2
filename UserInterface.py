@@ -21,8 +21,8 @@ if frozen:
 from MSPMaker import MSPMaker, Fragmenter
 from Molecules import Molecule, AminoAcid, Peptide, Glycan, Peptidoglycan
 from Generator import Generator
-from Exceptions import InputError
-from Common import TIME_STRING, MEMORY
+from base.Exceptions import InputError
+from base.Common import TIME_STRING, MEMORY
 
 # %% GUI
 

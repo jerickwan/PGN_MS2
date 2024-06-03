@@ -19,17 +19,14 @@ import numpy as np
 import copy
 import yaml
 
-from Molecules import AMINO_ACID_DB, GLYCAN_DB,\
-    ALL_AMINO_ACID_LST, ALL_GLC_LST, ALL_MUR_LST
+from Molecules import AMINO_ACID_DB, GLYCAN_DB, NULL_AA
+from Molecules import ALL_AMINO_ACID_LST, ALL_GLC_LST, ALL_MUR_LST
 from Molecules import Molecule, AminoAcid, Peptide, Glycan, Peptidoglycan
-from Molecules import NULL_AA
 from Molecules import run_two_pdt_rxn, run_polymerisation_rxn, create_mol_cache_key
-from Exceptions import NoReactionError, TooManyPdtsError, InputError
-from Illustrator import Illustrator
-from Common import BOND_CHAR, BRANCH_CHAR,\
-    BATCH_SIZE, MEMORY, TIME_STRING, OUTPUT_ADDUCTS
-from Common import Counter
-from Common import make_dir, flatten
+from base.Exceptions import NoReactionError, TooManyPdtsError, InputError
+from base.Illustrator import Illustrator
+from base.Common import BOND_CHAR, BRANCH_CHAR, BATCH_SIZE, MEMORY, TIME_STRING, OUTPUT_ADDUCTS
+from base.Common import Counter, make_dir, flatten
 
 # %% Globals
 
@@ -58,9 +55,9 @@ def cache_PGN_generation(generator, total, cache_key, glycans, peptides):
 
 @MEMORY.cache(ignore=["generator", "valid_P1", "valid_P2"])
 def cache_polymer_generation(generator, total, name,
-                               P1_bond, P2_bond,
-                               cache_key,
-                               valid_P1, valid_P2):
+                             P1_bond, P2_bond,
+                             cache_key,
+                             valid_P1, valid_P2):
     '''Returns list of polymerised PGN generated from given PGN and bonding criteria'''
     to_add = []
     generator.counter.set_counter(total, name)
@@ -226,7 +223,7 @@ class Generator():
             # convert dir to name
             path = Path(new_name)
             new_stem = path.stem
-            new_name = re.sub("[0-9]{12}_","", new_stem) # remove date
+            new_name = re.sub("[0-9]{12}_", "", new_stem)  # remove date
         if self.name != new_name:
             self.name = new_name
             print(f"\nGenerator {self.name} is created.")
@@ -311,15 +308,15 @@ class Generator():
             self.PGN_dict[1] = {}  # 1 = monomers, 2 = dimers, 3 = trimers
             print("\nGenerating peptides...\t1/5")
             self.create_peptide_combs()
-            start_step+=1
+            start_step += 1
         if start_step == 2 and exit_step >= start_step:
             print("\nGenerating glycans...\t2/5")
             self.create_glycan_combs()
-            start_step+=1
+            start_step += 1
         if start_step == 3 and exit_step >= start_step:
             print("\nGenerating monomers...\t3/5")
             self.create_length_combs()
-            start_step+=1
+            start_step += 1
         if start_step == 4 and exit_step >= start_step:
             print("\nModifying monomers...\t4/5")
             if self.modifications["Braun LPP"]:
@@ -330,7 +327,7 @@ class Generator():
                 self.form_terminal_muramic_lactam()
             if self.modifications["Lactoyl Peptide"]:
                 self.form_lactoyl_peptides()
-            start_step+=1
+            start_step += 1
         if start_step == 5 and exit_step >= start_step:
             if self.num_polymerisations > 0:
                 print("\nCreating polymerisations...\t5/5")
@@ -340,15 +337,12 @@ class Generator():
                     self.create_polymerisations(i)
             print("\nCompleted...\t6/6")
             print(f"\tTotal:\t{len(self)}")
-            start_step+=1
+            start_step += 1
 
         self.counter.enable_sleep()
         msg = "\n".join(
             [f"\t{k}-mer: {len(self.PGN_dict[k])}" for k in self.PGN_dict])
         print(msg)
-        self.counter.show_toast("PSN_MS2: Generator Job complete",
-                                msg,
-                                10)
         return msg
 
     def create_PGN_filter(self, PGN_components, PGN_bond, show_why=False):
@@ -402,8 +396,9 @@ class Generator():
             # check glycan length
             if "gly_len" in PGN_components:
                 if PGN.glycan_len(PGN.index) not in PGN_components["gly_len"]:
-                    if show_why: print("glycan length",
-                                       PGN_components["gly_len"])
+                    if show_why:
+                        print("glycan length",
+                              PGN_components["gly_len"])
                     return False
             # check valid glycan types
             if "gly_allowed" in PGN_components:
@@ -430,18 +425,21 @@ class Generator():
                 # check bridge peptides
                 if "bridge" in PGN_components[idx] and\
                         PGN_components[idx]["bridge"] != PGN.has_bridge(idx):
-                    if show_why: print(idx,"bridge")
+                    if show_why:
+                        print(idx, "bridge")
                     return False
                 if "bridges_allowed" in PGN_components[idx] and\
                     not PGN.check_bridge_identity(
                         idx, PGN_components[idx]["bridges_allowed"]):
-                    if show_why: print(idx,"bridges_allowed")
+                    if show_why:
+                        print(idx, "bridges_allowed")
                     return False
                 # check AA
                 if "allowed" in PGN_components[idx] and\
                     not PGN.check_AA_identity(
                         idx, PGN_components[idx]["allowed"]):
-                    if show_why: print(idx,"AA_allowed")
+                    if show_why:
+                        print(idx, "AA_allowed")
                     return False
             return True
         return filter_PGN
@@ -662,7 +660,7 @@ class Generator():
             Description for GUI.
 
         """
-        msg_parts = [] #parts of msg
+        msg_parts = []  # parts of msg
         if type(idx) == int:
             if precAA_lst is None or idx == 0:
                 condition = None
@@ -751,8 +749,8 @@ class Generator():
     # %%%% Bridge Peptides
 
     def set_bridge_peptides(self, idx, grp,
-                           bridge_lst,  # each bridge peptide will be a list
-                           valid_AAs="all"):
+                            bridge_lst,  # each bridge peptide will be a list
+                            valid_AAs="all"):
         """
         Sets the possible bridge peptides at a certain position attaching at
         either COOH or NH2.
@@ -787,7 +785,7 @@ class Generator():
         valid = []
         rejected = []
         bridge_lst.sort()
-        msg_parts = [] #parts of msg
+        msg_parts = []  # parts of msg
         if type(idx) == int and grp in ("NH2", "COOH"):
             for pep in bridge_lst:
                 if self.check_if_valid_peptide(pep):
@@ -797,7 +795,7 @@ class Generator():
             if idx not in self.bridge_peptides:
                 self.bridge_peptides[idx] = {}
             self.bridge_peptides[idx][grp] = {"valid_AAs": valid_AAs,
-                                             "bridges": valid}
+                                              "bridges": valid}
             num_added = len(valid)
             added_msg = f"{num_added} bridge peptides at AA[{idx}]-{grp} for {valid_AAs}:\
                 \n\t{bridge_lst}"
@@ -1070,7 +1068,7 @@ class Generator():
             Description for GUI.
 
         """
-        msg_parts = [] #parts of msg
+        msg_parts = []  # parts of msg
         if t in ("Glc", "Mur"):
             accepted, rejected = self.check_if_valid_glycan(t, gly_lst)
             self.glycan_units[t] = sorted(accepted)
@@ -1505,7 +1503,7 @@ class Generator():
         num_cleared = len(self.polymerisation_types)
         self.polymerisation_types = []  # criteria for polymerisation
         self.polymerisation_types_processed = None
-        msg  = f"Cleared {num_cleared} polymerisation types"
+        msg = f"Cleared {num_cleared} polymerisation types"
         return msg
 
     def set_polymerisation_types(self, P1, P2, P1_bond, P2_bond, kmer_range=None):
@@ -1655,7 +1653,8 @@ class Generator():
                 mod_total = mod_len_P1*mod_len_P2
                 reduction = int(100*(total-mod_total)/total)
                 print(f"\tRestricted {name} {k}-mers:")
-                print(f"\t\tP1: {P1_threshold} diff(s); P2: {P2_threshold} diff(s)")
+                print(
+                    f"\t\tP1: {P1_threshold} diff(s); P2: {P2_threshold} diff(s)")
                 print(f"\t\tReduced generated {k}-mers by {reduction}%")
                 total = mod_total
                 len_P1 = mod_len_P1
@@ -1665,17 +1664,12 @@ class Generator():
             # check amount
             print(f"\t{name} polymerised {k}-mers: {len_P1}x{len_P2}")
             if total > self.warning_threshold:
-                prompt = f"Continue with {total} {name}? Y/N/X"
-                "\n[Y] Continue [N] Skip to next step [X] Terminate"
-                answer = print(prompt)
-                answer = "N"
-                if answer == "N":
-                    print("[N] Skipping...")
-                    continue
-                elif answer == "X":
-                    print("[X] Terminating...")
-                    return
-                print("[Y]\tContinuing...")
+                warning_prompt = f'''
+                \n##### Alert! ######
+                Large number of polymers detected.
+                Consider reducing {total} {name} to improve runtime.
+                ###################'''
+                print(warning_prompt)
             # sort
             valid_P1.sort(key=lambda x: x.smiles)
             valid_P2.sort(key=lambda x: x.smiles)
@@ -2272,5 +2266,6 @@ class Generator():
         print("\nCreating graphical summary...")
         illustrator = Illustrator(ILL_SIZE, ILL_FONTSIZE, BOND_CHAR)
         illustrator.plot_all(self)
-        svg_filename = self.dir/f"{TIME_STRING}_{self.name}_graphical_summary.svg"
+        svg_filename = self.dir / \
+            f"{TIME_STRING}_{self.name}_graphical_summary.svg"
         illustrator.save_figure(svg_filename)

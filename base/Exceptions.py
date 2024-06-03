@@ -5,6 +5,9 @@ env = chem
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem import Draw  # drawing functions
+from pathlib import Path
+
+CWD = Path.cwd()
 
 # %% Molecules
 
@@ -18,9 +21,9 @@ def highlight_reacting_groups(cpd1, cpd2, type_rxn, rxn, error_name):
     match1 = sum(cpd1.mol.GetSubstructMatches(substruct1), ())
     match2 = sum(cpd2.mol.GetSubstructMatches(substruct2), ())
     img1 = Draw.MolToImage(cpd1.mol, size=(800, 800), highlightAtoms=match1)
-    img1.save(f"img/{error_name}_cpd1.png")
+    img1.save(CWD/"img"/f"{error_name}_cpd1.png")
     img2 = Draw.MolToImage(cpd2.mol, size=(800, 800), highlightAtoms=match2)
-    img2.save(f"img/{error_name}_cpd2.png")
+    img2.save(CWD/"img"/f"{error_name}_cpd2.png")
 
 
 class NoReactionError(Exception):
@@ -88,10 +91,10 @@ class TooManyPdtsError(Exception):
 # %% Generator
 
 class InputError(Exception):
-    
+
     def __init__(self,component,msg):
         self.message = f"Invalid Generator input for {component}.\n{msg}"
-        super().__init__(self.message)        
+        super().__init__(self.message)
 
 # %% Illustrator
 

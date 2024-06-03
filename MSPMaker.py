@@ -12,14 +12,13 @@ import re
 
 from pathlib import Path
 
-from Reactions import PEPTIDE_FRAG_TYPES, GLYCAN_FRAG_TYPES
+from base.Reactions import PEPTIDE_FRAG_TYPES, GLYCAN_FRAG_TYPES
 from Molecules import Molecule
 from Molecules import run_fragment_rxn
 
-from Common import BATCH_SIZE, PRECISION_MASS, PRECISION_INTENSITY,\
-    TIME_STRING, MEMORY, OUTPUT_ADDUCTS
-from Common import Counter
-from Common import make_dir, sigmoid
+from base.Common import BATCH_SIZE, PRECISION_MASS, PRECISION_INTENSITY
+from base.Common import TIME_STRING, MEMORY, OUTPUT_ADDUCTS
+from base.Common import Counter, make_dir, sigmoid
 
 # %% Globals
 
@@ -1474,9 +1473,6 @@ class MSPMaker():
             self.export_consolidated_peaklists(pickle_filename,
                                                peaklists_pkl_list,
                                                inherit_name=False)
-        self.counter.show_toast("PSN_MS2: MSPMaker Job complete",
-                                f"{self.name} completed.",
-                                10)
         self.counter.enable_sleep()
         return pickle_filename, peaklists_pkl_list
 

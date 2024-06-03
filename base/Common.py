@@ -8,75 +8,47 @@ import numpy as np
 import datetime
 import joblib
 
-import os
-
+from pathlib import Path
 from collections.abc import Iterable
 
 
 BOND_CHAR = "."  # used to indicate main chain bonds
 BRANCH_CHAR = "--"  # used to indicate side chain bonds /synonyms
 shBRANCH_CHAR = "-" # used to indicate side chain bonds /names
-BATCH_SIZE = 750  # maximum no. of cpds handled at one time
+BATCH_SIZE = 2500  # maximum no. of cpds handled at one time
 PRECISION_MASS = 5
 PRECISION_INTENSITY = 4
 OUTPUT_ADDUCTS = ['[M+H]+', '[M+Na]+', '[M+K]+',
                   '[M+2H]2+', '[M+3H]3+']  # adducts
+CWD = Path.cwd().parent
 
 # %%% Create Folders
 
 for folder in ["img","output","cache"]:
-    try:
-        cwd = os.getcwd()
-        path = cwd+f"/{folder}"
-        os.mkdir(path)
-    except FileExistsError:
-        pass
+    path = CWD/"folder"
+    path.mkdir(exist_ok=True)
 
 # %% Developer Options
 
-DEV_MODE = False
+DEV_MODE = True
 if DEV_MODE:
-    # enables wakepy, win10toast, telegram
+    # enables wakepy, telegram
     if __name__ == "__main__":
         print("Wakepy active")
-        print("Win10Toast active")
     import wakepy
-    from win10toast import ToastNotifier
-    TOASTER = ToastNotifier()
-    # Telegram
-    TELEGRAM_ENABLED = False
-    BOT_TOKEN, CHAT_ID, GROUP_ID, TELEBOT = None, None, None, None
-    def check_telegram(path="bot.txt"):
-        global TELEGRAM_ENABLED, BOT_TOKEN, CHAT_ID, GROUP_ID, TELEBOT
-        try:
-            import telepot
-            BOT_TOKEN, CHAT_ID, GROUP_ID = open(path,"r").read().splitlines()
-            TELEBOT = telepot.Bot(BOT_TOKEN)
-            TELEGRAM_ENABLED = True
-        except Exception:
-            TELEGRAM_ENABLED = False
-            BOT_TOKEN, CHAT_ID, GROUP_ID, TELEBOT = None, None, None, None
-        if __name__ == "__main__" and TELEGRAM_ENABLED:
-            print("Telegram active")
-        return TELEGRAM_ENABLED
-    check_telegram()
-
-else:
-    TOASTER = None
-    TELEGRAM_ENABLED = False
 
 # %% Common Functions
 
 
 def make_dir(*lst):
     '''Tries to make a directory for each path in lst.'''
-    for dr in lst:
+    for path in lst:
         try:
-            os.mkdir(dr)
+            path.mkdir()
         except FileExistsError:
-            pass
+            print(f"{path} exists.")
         else:
-            print(f"{dr} created.")
+            print(f"{path} created.")
 
 
 def sigmoid(num):
@@ -106,7 +78,7 @@ def flatten(l):
 
 # %% Caching
 
-CACHE_DIR = "cache"
+CACHE_DIR = CWD/"cache"
 MEMORY = joblib.Memory(CACHE_DIR, verbose=0,
                        bytes_limit = 5e+9)
 
@@ -157,7 +129,6 @@ class Counter:
         self.initial_time = self.current_time
         # Developer only
         self.wakepy = False # Tracks waking status
-        self.toaster = None # Win10Toaster
         self.telegram = None # Telegram
         # Optionals
         if min_count is None:
@@ -172,10 +143,6 @@ class Counter:
             self.obj_interval = COUNTER_PRINT_OBJ_INTERVAL
         else:
             self.obj_interval = obj_interval
-        if chat_id is None and TELEGRAM_ENABLED:
-            self.chat_id = CHAT_ID
-        else:
-            self.chat_id =  chat_id
         # Broadcast
         if broadcast_time is None or not isinstance(broadcast_time, list):
             self.broadcast_time = []
@@ -294,58 +261,3 @@ class Counter:
             self.wakepy = False
             if "sleep" in self.broadcast_time:
                 print("\tSleeping enabled.")
-
-    def show_toast(self, title, msg, duration, **kwargs):
-        """
-        Displays a Windows Toast notification.
-
-        Parameters
-        ----------
-        title : string
-        msg : string
-        duration : float
-            Duration in seconds.
-        **kwargs :
-            Passed to ToastNotifier.show_toast()
-
-        Returns
-        -------
-        None.
-
-        """
-        if not DEV_MODE:
-            return
-        if self.toaster is None:
-            self.toaster = TOASTER
-        try:
-            self.toaster.show_toast(title, msg, duration=duration, threaded=True,
-                                    **kwargs)
-        except Exception as exc:
-            print(exc)
-
-    def send_telegram_msg(self, msg, chat_id=None):
-        """
-        Sends a Telegram message.
-
-        Parameters
-        ----------
-        msg : string
-        chat_id : string, optional
-            ID of user. If None, the default is self.chat_id.
-
-        Returns
-        -------
-        None.
-
-        """
-        if not DEV_MODE:
-            return
-        if TELEGRAM_ENABLED:
-            if self.telegram is None:
-                self.telegram = TELEBOT
-            if chat_id is None:
-                chat_id = self.chat_id
-            try:
-                self.telegram.sendMessage(chat_id,msg)
-            except Exception as exc:
-                print(exc)

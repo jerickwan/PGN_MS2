@@ -626,7 +626,7 @@ class Illustrator:
         if total == 0 or num_polymers == 0:
             # Polymerisation Num. text
             self.ax.text(0.5, self.gap,
-                         f"No. Polymerizations: None",
+                         "No. Polymerizations: None",
                          va="bottom",
                          ha="center",
                          fontsize=self.fontsize_title)
