@@ -6,9 +6,9 @@ channels:
 dependencies:
   - python>=3.9
   - anaconda
-  - rdkit
-  - pandas
-  - numpy
-  - yaml
-  - joblib
-  - easygui
+  - rdkit=2024.03.2
+  - pandas=2.1.1
+  - numpy=1.26.0
+  - yaml=6.0.1
+  - joblib=1.2.0
+  - easygui=0.98.3
