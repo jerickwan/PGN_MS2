@@ -36,6 +36,31 @@ A more detailed user guide for the GUI can be found [here.](https://github.com/u
 Alternatively, PGN_MS2 can be run with an IDE.* Sample code is provided with ManualRun.py
 
 *Spyder 3.9 is not compatible with RDKit and must be ran from a separate environment. See Spyder's [FAQ](https://docs.spyder-ide.org/current/faq.html#using-existing-environment) for more information.
+### Output
+Output is stored in /output.Each file is named with a prefix comprising the starting datetime and a user-given name (e.g. 20240605_Ecoli).
+The various outputs are divided among the three subfolders as such:
+| Subfolder     | Filename                                   | Description                                                                                   |
+| :------------ |:-------------------------------------------| :---------------------------------------------------------------------------------------------|
+| compounds     | [prefix].xlsx                              | MS1 database in spreadsheet format. Monomers, dimers and trimers are shown on separate sheets.|
+|               | [prefix].pickle                            | MS1 Database in pickle format (in batches of 5,000 compounds).                                |
+|               | [prefix].yaml                              | User-defined settings saved in yaml format.                                                   |
+|               | [prefix]_graphical_summary.svg             | MS1 Database in pickle format (in batches of 5,000 compounds).                                |
+| msp           | [prefix].msp                               | MS2 database. Different adduct forms are given as separate entries. Fragment ions with same _m/z_ (but different structures) are combined and only the top 50 most intense ions are saved.|
+|               | [prefix]_graphical_summary.svg             | MS1 Database in pickle format (in batches of 5,000 compounds).                                |
+|               | [prefix]_[number].pickle                   | MS2 Database in pickle format. Saved in batches of 5,000 compounds, which is indicated by [number].|
+| peaklists     | [prefix]_spectradata.xlsx                  | MS2 database in spreadsheet format. Each batch has its own sheet. Each compound is presented as its own table containing the top 200 most intense ions.|
+|               | [prefix]_iondata.xlsx                      | All ions and their respective structures are tabulated in this fil                            |
+### Supported PGN Chemotypes
+PGN_MS2 imports chemical information from an internal library located at:
+```
+data/PGN.xlsx
+```
+PGN_MS2 was designed to accomodate most [PGN chemotypes.](https://doi.org/10.1111/j.1574-6976.2007.00094.x) It is able to generate PGN with:
+* modified glycans: acetylation (increase/decrease), glycolylation (anMurNGlyc) and dehydration (anMurNAc).
+* stem peptide sequences up to eight amino acids long. Supported amino acids include the canonical amino acids as well as non-canonical amino acids commonly found in PGN (mDAP, Orn, γ-isoGln).
+* bridge peptides (i.e. branch peptides, side chains) that are attached to either diamino/dicarboxy amino acids in the stem peptide.
+* a wide variety of modifications such as lactamization, endopeptidase digestion.
+* two different polymerisation modes: either through glycosidic bonds or peptide bonds.
 ## Misc / Other Links
 This [tool](https://www.yqiaolab.com/pgn_ms2-tool) was built by members of [Qiao Lab.](https://www.yqiaolab.com)
 MS/MS spectra for all identified PGN from the a/m paper is also available as a download on [MoNA.](https://mona.fiehnlab.ucdavis.edu/downloads)
