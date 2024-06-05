@@ -85,7 +85,7 @@ class GUI():
 
         """
         name = easygui.enterbox("Enter a name.",
-                                self.title)
+                                self.title, default="test")
         self.name = name
         self.history = f"Name: {self.name}"
         if self.generator is not None:
@@ -462,6 +462,7 @@ To exit and return to main menu, backtrack {self.max_backtracks} times.\n'''
                                              gly_range=gly_range,
                                              pep_len=[4, 5])
         # Terminate
+        self.history = "Returning to main menu..."
         self.start_step = 0
         self.backtracks = 0
 
@@ -543,22 +544,57 @@ To exit and return to main menu, backtrack {self.max_backtracks} times.\n'''
         None.
 
         """
-        msg = "Select modifications."
+        msg = "Select modifications. Pick 'Explain modifications' to open a textbox that explains selected modification(s)."
         choices = list(self.generator.modifications.keys())
         selected = [i for i, mod in enumerate(
             choices) if self.generator.modifications[mod]]
         choices.append("No modifications")
-        picked = easygui.multchoicebox(
-            self.history+msg, self.title, choices=choices, preselect=selected)
-        if picked is None:
-            self.register_step(False)
-        elif "No modifications" in picked:
-            picked = []
-            self.history = "No modifications added."
-            self.register_step(True)
-        else:
-            self.history = self.generator.add_modifications(picked)
-            self.register_step(True)
+        choices.append("Explain modifications")
+        picking = True
+        picked = None
+        while picking:
+            picked = easygui.multchoicebox(
+                self.history+msg, self.title, choices=choices, preselect=selected)
+            if picked is None:
+                picking =  False
+                self.register_step(False) #backtrack
+            elif "Explain modifications" in picked:
+                self.gen_explain_modifications(picked)
+                continue
+                # pick again
+            elif "No modifications" in picked:
+                picked = []
+                picking = False
+                self.history = "No modifications added."
+                self.register_step(True)
+            else:
+                picking = False
+                self.history = self.generator.add_modifications(picked)
+                self.register_step(True)
+
+    def gen_explain_modifications(self, picked):
+        """
+        Gives a textbox with an explanation of each modification.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        explanations = {
+            "Alanine/Lactate Substitution": "Lactate is added at position 5 instead of Ala",
+            "Lactoyl Peptide": "Both disaccharides are removed, leaving behind a lactoyl group attached to the stem peptide’s N-terminus.",
+            "Muramic Lactam": "A lactam is formed between amino group on C2 and the lactoyl group on C3 on the muramyl sugar. No stem peptide is present.",
+            "Amidase": "Generates glycans without stem peptides and vice versa. Ignore this option as it is already included as default.",
+            "EPase P1": "Creates stem peptides with no glycan and no amino acid in position 1.",
+            "EPase P2": "Creates stem peptides with no glycan and no amino acid in positions 1 and 2.",
+            "Braun LPP": "Adds ε-Lys-Arg (kR) dipeptide to positions 4 and 5 respectively."
+            }
+        msg_parts = [f"\n{x}:\n{explanations[x]}\n" for x in picked if x in explanations]
+        msg_parts.insert(0,"####Explanations####")
+        msg = "\n".join(msg_parts)
+        easygui.msgbox(msg=msg, title=self.title)
 
     # %%%% Length
 
