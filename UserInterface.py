@@ -64,19 +64,20 @@ class GUI():
 
     def __init__(self):
         self.init_title = "PGN_MS2"
-        self.title = self.init_title
         self._history = [self.init_title]
         self.generator = None
         self.maker = None
         self.settings = {}
         self.load_GUI_settings()
         self.name = None
-        self.retries = 0
+        self.backtracks = 0
+        self.max_backtracks = 3
         self.start_step = 0
+        self.title = self.init_title
 
-    def rename(self):
+    def rename_generator(self):
         """
-        Renames the Generator and the GUI window.
+        Renames the Generator.
 
         Returns
         -------
@@ -91,6 +92,12 @@ class GUI():
             self.generator.refresh_name(self.name)
         else:
             self.create_generator()
+
+    def update_title(self):
+        if self.name is None:
+            self.title = self.init_title # reset
+        else:
+            self.title = f"{self.init_title} // {self.name} // Step {self.start_step}"
 
     @property
     def history(self):
@@ -309,7 +316,7 @@ class GUI():
             filepath = GUI.PARAM_FILEPATH
         else:
             if self.name is None:
-                self.rename()
+                self.rename_generator()
             filepath = Path(f"settings/ui/{self.name}_parameters.yaml")
 
         with open(filepath, "w") as f:
@@ -367,8 +374,7 @@ class GUI():
         self.history = f"Generator settings loaded from \n{settings_file}"
         return True
 
-    def gen_build_settings(self, exit_step=12,
-                           max_retries=3):
+    def gen_build_settings(self, exit_step=12):
         """
         Builds settings for the Generator.
         Settings are generated in 12 steps:
@@ -386,8 +392,6 @@ class GUI():
         exit_step : int, optional
             Indicates the integer of the last step.
             Use 12 to exit after Difference Calculator. The default is 12.
-        max_retries : int, optional
-            Maximum no. of times the user is allowed to backtrack.
 
         Returns
         -------
@@ -396,18 +400,21 @@ class GUI():
          """
         if self.start_step == 0:
             self.start_step += 1
-            self.retries = 0
+            self.backtracks = 0
         defaults = [
             "Ala",
             "γ-Glu,γ-isoGln",
             "mDAP,mDAP(NH2),Lys,Orn",
             self.settings["full_AA_range"],
             self.settings["full_AA_range"]]
+        self.history =\
+f'''\nTo backtrack, use the cancel or [X] button. You may backtrack up to {self.max_backtracks} times.
+To exit and return to main menu, backtrack {self.max_backtracks} times.\n'''
         # Loop
-        while self.retries <= max_retries and exit_step >= self.start_step:
+        while self.backtracks <= self.max_backtracks and exit_step >= self.start_step:
             # Length
             if self.start_step == 1:
-                self.rename()
+                self.rename_generator()
                 self.gen_set_length(mod_values=[0, 2, 0, 5, 1])
             # Glycans - Glc-type
             if self.start_step == 2:
@@ -423,8 +430,8 @@ class GUI():
                     for glycan in self.generator.glycan_units["Mur"]:
                         if "[r]" in glycan:
                             reduced_muro = True
-                            print("Reduced Mur-type sugars preferred\
-                                  in subsequent settings.")
+                            reduced_msg = "Reduced Mur-type sugars preferred in subsequent settings."
+                            print(reduced_msg)
             # Peptide
             if 4 <= self.start_step < 9:
                 idx = self.start_step-3
@@ -456,7 +463,7 @@ class GUI():
                                              pep_len=[4, 5])
         # Terminate
         self.start_step = 0
-        self.retries = 0
+        self.backtracks = 0
 
     def gen_edit_settings(self):
         """
@@ -516,11 +523,13 @@ class GUI():
         if success:
             self.start_step += 1
             print(f"Advancing to step [{self.start_step}]")
+            self.update_title()
         else:
-            self.retries += 1
+            self.backtracks += 1
             if self.start_step > 1:
                 self.start_step -= 1
-            trace_msg = f"--- Returning to previous step [{self.start_step}] ---"
+            trace_msg = f"--- Returning to previous step [{self.start_step}] {self.backtracks}/{self.max_backtracks}---"
+            self.update_title()
             self.history = trace_msg
 
     # %%%% Modifications
@@ -706,7 +715,10 @@ class GUI():
             condition = None
             if idx == 5:
                 conditional_bool = easygui.boolbox(
-                    msg="Use conditional addition?")
+                    msg=\
+'''Use conditional addition?
+With conditional addition, amino acids at the fifth position will only be added if the fourth amino acid is from a defined range of amino acids.
+This avoids nonsensical peptide sequences like "AemHH".''')
                 if conditional_bool:
                     msg = f'''
                     Add AAs at {idx} only if preceding AA is from ...
@@ -730,7 +742,9 @@ class GUI():
         None.
 
         """
-        msg = "Select position of bridge peptide or 0 to skip."
+        msg = \
+'''Select position of bridge peptide on the stem peptide or 0 to skip.
+For most gram-positive species, the bridge peptide is attached to the 3rd position of the stem peptide (Lys/Orn)'''
         idx = easygui.choicebox(
             self.history+msg,
             self.title,
@@ -743,18 +757,22 @@ class GUI():
             self.register_step(True)
             return
 
-        msg = "Select connection type"
+        msg = \
+f'''Select connection type.
+COOH --> COOH group of AA at position {idx} forms isopeptide bond with bridge peptide's N-terminus.
+NH2 --> NH2 group of AA at position {idx} forms isopeptide bond with bridge peptide's C-terminus.
+'''
         grp = easygui.choicebox(
             self.history+msg,
             self.title,
             choices=["COOH", "NH2"])
         # type mode
-        msg = f'''
-        Type AAs which have a chain at position {idx}-{grp}, separated by a ','.
-        'any'\t--> any AA can be used.
-        'diamino'\t--> any diamino AA can be used (e.g. Lys, mDAP).
-        'dicarboxy'\t--> any dicarboxy AA can be used (e.g. Glu).
-        '''
+        msg = \
+f'''Type AAs which have a bridge peptide at position {idx}-{grp}, separated by a ','.
+'any'\t--> any AA can be used.
+'diamino'\t--> any diamino AA can be used (e.g. Lys, mDAP).
+'dicarboxy'\t--> any dicarboxy AA can be used (e.g. Glu).
+'''
         if grp == "COOH":
             default = "dicarboxy"
         elif grp == "NH2":
@@ -771,12 +789,11 @@ class GUI():
             valid = valid.split(",")
             valid = set(map(str.strip, valid))
 
-        msg = f'''
-        Type chains that connect to {idx}-{valid}-{grp}, separated by a ','.
-        Amino acids are typed from nearest to stem peptide to furthest
-        and separated by a '>'
-        e.g. β-Asp, Ala>Ala, Ser>Ala>Thr>Ala
-        '''
+        msg = \
+f'''Type bridge peptide(s) that connect to {idx}-{valid}-{grp}, separated by a ','.
+Amino acids are typed from nearest to stem peptide to furthest and separated by a '>'
+e.g. β-Asp, Ala>Ala, Ser>Ala>Thr>Ala
+'''
         chains = easygui.enterbox(
             self.history+msg, self.title)
         if chains is None:
@@ -1024,9 +1041,13 @@ class GUI():
         None.
 
         """
-        msg = '''Set diffcalc parameters.
-        Min. polymerisation no.: Reduce only when no. polymerisations exceeds this.
-        Max. differences: Remove monomers which exceed this much difference.'''
+        msg = \
+'''Set diffcalc parameters.
+
+Difference calculator reduces the no. of polymers formed by removing monomers that vary excessively from the canonical muropeptide from the polymerisation pool.
+
+Min. polymerisation no.: Reduce only when no. polymerisations exceeds this.
+Max. differences: Remove monomers which exceed this much difference.'''
         fields = ["Min. polymerisation no.", "Max. differences"]
         field_values = [1,
                         1]
@@ -1226,7 +1247,7 @@ class GUI():
         """
         return None
 
-    # %%%% Run
+    # %%%% Execute Generator and MSPMaker
 
     def gen_execute(self):
         """
