@@ -11,7 +11,6 @@ import joblib
 from pathlib import Path
 from collections.abc import Iterable
 
-
 BOND_CHAR = "."  # used to indicate main chain bonds
 BRANCH_CHAR = "--"  # used to indicate side chain bonds /synonyms
 shBRANCH_CHAR = "-" # used to indicate side chain bonds /names
@@ -20,7 +19,11 @@ PRECISION_MASS = 5
 PRECISION_INTENSITY = 4
 OUTPUT_ADDUCTS = ['[M+H]+', '[M+Na]+', '[M+K]+',
                   '[M+2H]2+', '[M+3H]3+']  # adducts
-CWD = Path.cwd().parent
+
+if __name__ == "__main__":
+    CWD = Path.cwd().parent
+else:
+    CWD = Path.cwd()
 
 # %%% Create Folders
 
