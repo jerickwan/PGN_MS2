@@ -28,12 +28,12 @@ else:
 # %%% Create Folders
 
 for folder in ["img","output","cache"]:
-    path = CWD/"folder"
+    path = CWD/folder
     path.mkdir(exist_ok=True)
 
 # %% Developer Options
 
-DEV_MODE = True
+DEV_MODE = False
 if DEV_MODE:
     # enables wakepy, telegram
     if __name__ == "__main__":
