@@ -14,12 +14,16 @@ Read the open access paper [here.](https://doi.org/10.1039/D3SC05819K)
 PGN_MS2 is written in Python 3.9 and uses [RDKit](https://www.rdkit.org/) to manipulate molecules. A graphical user interface (built with [easygui](https://github.com/robertlugg/easygui)) is available.
 The following Python packages are required:
 ```
-rdkit
-pandas
-numpy
-yaml
-joblib
+Common
 easygui
+IPython
+joblib
+matplotlib
+numpy
+openpyxml
+pandas
+pyyaml
+rdkit
 ```
 The Python environment can be created with [Conda](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) using the following command:
 ```
