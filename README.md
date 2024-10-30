@@ -6,9 +6,9 @@ Furthermore, it can simulate MS/MS spectra for each PGN and compile these predic
 The spectral library (.msp) is compatible with open-access and vendor software, e.g. MS-DIAL, for automated matching and scoring of experimental MS/MS peaks, facilitating automated PGN identification.
 Read the open access paper [here.](https://doi.org/10.1039/D3SC05819K) 
 
-![Figure 1](https://github.com/jerickwan/PGN_MS2_private/assets/95602149/b0c08ea9-5efd-430c-8118-95cad216cbab)
+![Summary](https://github.com/user-attachments/assets/cdb298d2-9e71-404b-aef7-cec7002837f7)
 
-![Workflow](https://github.com/jerickwan/PGN_MS2_private/assets/95602149/12a82d7c-4bff-4a2d-a836-efb28f84a7d7)
+![Workflow](https://github.com/user-attachments/assets/6884e0ce-17bd-463c-9032-bfd64edc929a)
 
 ## Installation
 PGN_MS2 is written in Python 3.9 and uses [RDKit](https://www.rdkit.org/) to manipulate molecules. A graphical user interface (built with [easygui](https://github.com/robertlugg/easygui)) is available.
@@ -37,19 +37,18 @@ Alternatively, PGN_MS2 can be run with an IDE.* Sample code is provided with Man
 
 *Spyder 3.9 is not compatible with RDKit and must be ran from a separate environment. See Spyder's [FAQ](https://docs.spyder-ide.org/current/faq.html#using-existing-environment) for more information.
 ### Output
-Output is stored in /output.Each file is named with a prefix comprising the starting datetime and a user-given name (e.g. 20240605_Ecoli).
+Output is stored in /output. Each file is named with a prefix comprising the starting datetime and a user-given name (e.g. 20240605_Ecoli).
 The various outputs are divided among the three subfolders as such:
-| Subfolder     | Filename                                   | Description                                                                                   |
-| :------------ |:-------------------------------------------| :---------------------------------------------------------------------------------------------|
-| compounds     | [prefix].xlsx                              | MS1 database in spreadsheet format. Monomers, dimers and trimers are shown on separate sheets.|
-|               | [prefix].pickle                            | MS1 Database in pickle format (in batches of 5,000 compounds).                                |
-|               | [prefix].yaml                              | User-defined settings saved in yaml format.                                                   |
-|               | [prefix]_graphical_summary.svg             | MS1 Database in pickle format (in batches of 5,000 compounds).                                |
-| msp           | [prefix].msp                               | MS2 database. Different adduct forms are given as separate entries. Fragment ions with same _m/z_ (but different structures) are combined and only the top 50 most intense ions are saved.|
-|               | [prefix]_graphical_summary.svg             | MS1 Database in pickle format (in batches of 5,000 compounds).                                |
-|               | [prefix]_[number].pickle                   | MS2 Database in pickle format. Saved in batches of 5,000 compounds, which is indicated by [number].|
+| Subfolder     | Filename                                   | Description                                                                                             |
+| :------------ |:-------------------------------------------| :-------------------------------------------------------------------------------------------------------|
+| compounds     | [prefix].xlsx                              | MS1 database in spreadsheet format. Monomers, dimers and trimers are shown on separate sheets.          |
+|               | [prefix].pickle                            | MS1 Database in pickle format.                                                                          |
+|               | [prefix].yaml                              | User-defined settings saved in yaml format.                                                             |
+|               | [prefix]_graphical_summary.svg             | Graphical summary of settings used to generate the PGN library.                                         |
+| msp           | [prefix].msp                               | MS2 database. Different adduct forms are given as separate entries.                                     |
+|               | [prefix]_[number].pickle                   | MS2 Database in pickle format. Saved in batches of 5,000 compounds, which is indicated by [number].     |
 | peaklists     | [prefix]_spectradata.xlsx                  | MS2 database in spreadsheet format. Each batch has its own sheet. Each compound is presented as its own table containing the top 200 most intense ions.|
-|               | [prefix]_iondata.xlsx                      | All ions and their respective structures are tabulated in this fil                            |
+|               | [prefix]_iondata.xlsx                      | All ions and their respective structures are tabulated in this file.                                    |
 ### Supported PGN Chemotypes
 PGN_MS2 imports chemical information from an internal library located at:
 ```
@@ -61,6 +60,8 @@ PGN_MS2 was designed to accomodate most [PGN chemotypes.](https://doi.org/10.111
 * bridge peptides (i.e. branch peptides, side chains) that are attached to either diamino/dicarboxy amino acids in the stem peptide.
 * a wide variety of modifications such as lactamization, endopeptidase digestion.
 * two different polymerisation modes: either through glycosidic bonds or peptide bonds.
+
+![Chemotypes](https://github.com/user-attachments/assets/37364820-b942-467a-b3b9-0607f8dcd6f5)
 ## Misc / Other Links
 This [tool](https://www.yqiaolab.com/pgn_ms2-tool) was built by members of [Qiao Lab.](https://www.yqiaolab.com)
 MS/MS spectra for all identified PGN from the a/m paper is also available as a download on [MoNA.](https://mona.fiehnlab.ucdavis.edu/downloads)
